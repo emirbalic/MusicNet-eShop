@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Core.Entities;
 using Core.Interfaces;
 using StackExchange.Redis;
-// using StackExchange.Redis;
 
 namespace Infrastructure.Data
 {

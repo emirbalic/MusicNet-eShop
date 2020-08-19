@@ -31,8 +31,8 @@ export class CheckoutPaymentComponent implements OnInit {
       this.toastr.success('Order created successfully');
       this.basketService.deleteLocalBasket(basket.id);
       const navigationExtres: NavigationExtras = {state: order};
-      this.router.navigate(['checkout/success'], navigationExtres)
-      //console.log(order);
+      this.router.navigate(['checkout/success'], navigationExtres);
+      // console.log(order);
     }, error => {
       this.toastr.error(error.message);
       console.log(error);
@@ -44,7 +44,7 @@ export class CheckoutPaymentComponent implements OnInit {
       basketId: basket.id,
       deliveryMethodId: +this.checkoutForm.get('deliveryForm').get('deliveryMethod').value,
       shipToAddress: this.checkoutForm.get('addressForm').value
-    }
+    };
   }
 
 }

@@ -55,9 +55,10 @@ namespace API.Controllers
 
 
         // === GENERIX ===
+        [Cached(600)]
         [HttpGet]
         public async Task<ActionResult<Pagination<ProductToReturnDto>>> GetProducts(
-            [FromQuery]ProductSpecParams productParams)
+            [FromQuery] ProductSpecParams productParams)
         {
 
             var spec = new ProductsWithTypesAndBrandsSpecification(productParams);
@@ -71,7 +72,7 @@ namespace API.Controllers
             var data = _mapper
             .Map<IReadOnlyList<Product>, IReadOnlyList<ProductToReturnDto>>(products);
 
-            return Ok(new Pagination<ProductToReturnDto>( productParams.PageIndex, productParams.PageSize,
+            return Ok(new Pagination<ProductToReturnDto>(productParams.PageIndex, productParams.PageSize,
             totalItems, data));
             // return products.Select(product => new ProductToReturnDto
             // {
@@ -86,6 +87,7 @@ namespace API.Controllers
         }
 
         // === GENERIX ===
+        [Cached(600)]
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
@@ -95,7 +97,7 @@ namespace API.Controllers
 
             var product = await _productRepo.GetEntityWithSpec(spec);
 
-            if( product == null ) return NotFound(new ApiResponse(404));
+            if (product == null) return NotFound(new ApiResponse(404));
 
             return _mapper.Map<Product, ProductToReturnDto>(product);
             // return new ProductToReturnDto
@@ -110,6 +112,7 @@ namespace API.Controllers
             // };
         }
 
+        [Cached(600)]
         [HttpGet("brands")]
         public async Task<ActionResult<IReadOnlyList<ProductBrand>>> GetProductBrands()
         {

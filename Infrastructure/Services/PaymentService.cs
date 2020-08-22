@@ -31,7 +31,7 @@ namespace Infrastructure.Services
 
             var basket = await _basketRepository.GetBasketAsync(basketId);
 
-            if(basket == null) return null;  
+            if (basket == null) return null;
 
             var shippingPrice = 0m;
 
@@ -62,7 +62,7 @@ namespace Infrastructure.Services
                     Amount = (long)basket.Items.Sum(i => i.Quantity * (i.Price * 100)) + (long)
                     shippingPrice * 100,
                     Currency = "usd",
-                    PaymentMethodTypes = new List<string> {"card"}
+                    PaymentMethodTypes = new List<string> { "card" }
                 };
                 intent = await service.CreateAsync(options);
                 basket.PaymentIntentId = intent.Id;
@@ -83,6 +83,19 @@ namespace Infrastructure.Services
             return basket;
         }
 
+        public async Task<Order> UpdateOrderPaymentFailed(string paymentIntentId)
+        {
+            var spec = new OrderByPaymentIntentIdSpecification(paymentIntentId);
+            var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
+
+            if (order == null) return null;
+
+            order.Status = OrderStatus.PaymentFailed;
+            await _unitOfWork.Complete();
+
+            return order;
+
+        }
         public async Task<Order> UpdateOrderPaymentSucceeded(string paymentIntentId)
         {
             var spec = new OrderByPaymentIntentIdSpecification(paymentIntentId);
@@ -97,19 +110,7 @@ namespace Infrastructure.Services
 
             return order;
         }
-        public async Task<Order> UpdateOrderPaymentFailed(string paymentIntentId)
-        {
-            var spec = new OrderByPaymentIntentIdSpecification(paymentIntentId);
-            var order = await _unitOfWork.Repository<Order>().GetEntityWithSpec(spec);
 
-             if (order == null) return null;
-
-             order.Status = OrderStatus.PaymentReceived;
-             await _unitOfWork.Complete();
-
-             return order;
-
-        }
 
     }
 }

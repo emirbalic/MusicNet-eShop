@@ -11,5 +11,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.4.1"/>
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="5.4.1"/>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.0.0"/>
+    <Content Update="Content\images\products\placeholder.png">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 </Project>

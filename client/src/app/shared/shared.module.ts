@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
-
+import {CurrencyMaskModule} from 'ng2-currency-mask';
 
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
@@ -28,7 +28,8 @@ import { RouterModule } from '@angular/router';
     FormsModule,
     BsDropdownModule.forRoot(),
     CdkStepperModule,
-    RouterModule
+    RouterModule,
+    CurrencyMaskModule
   ],
   exports: [
     PaginationModule,
@@ -42,7 +43,8 @@ import { RouterModule } from '@angular/router';
     TextInputComponent,
     CdkStepperModule,
     StepperComponent,
-    BasketSummaryComponent
+    BasketSummaryComponent,
+    CurrencyMaskModule
   ]
 })
 export class SharedModule { }

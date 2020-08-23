@@ -5,6 +5,7 @@ import { TestErrorComponent } from './core/test-error/test-error.component';
 import { ServerErrorComponent } from './core/server-error/server-error.component';
 import { NotFoundComponent } from './core/not-found/not-found.component';
 import { AuthGuard } from './core/guards/auth.guard';
+import { AdminGuard } from './core/guards/admin.guard';
 
 
 
@@ -30,6 +31,12 @@ const routes: Routes = [
   },
   { path: 'account', loadChildren: () => import('./account/account.module')
   .then(mod => mod.AccountModule), data: {breadcrumb: {skip: true}}},
+  {
+    path: 'admin',
+    canActivate: [AuthGuard, AdminGuard],
+    loadChildren: () => import('./admin/admin.module')
+      .then(mod => mod.AdminModule), data: { breadcrumb: 'Admin' }
+  },
   { path: '**', redirectTo: 'not-found', pathMatch: 'full'},
 ];
 

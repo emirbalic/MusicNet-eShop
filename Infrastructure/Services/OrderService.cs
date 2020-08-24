@@ -24,13 +24,14 @@ namespace Infrastructure.Services
         {
             var basket = await _basketRepo.GetBasketAsync(basketId);
 
+            // get items from the product repo
             var items = new List<OrderItem>();
-
             foreach (var item in basket.Items)
             {
                 var productItem = await _unitOfWork.Repository<Product>().GetByIdAsync(item.Id);
                 var itemOrdered = new ProductItemOrdered(productItem.Id, productItem.Name,
-                productItem.PictureUrl);
+                productItem.Photos.FirstOrDefault(x => x.IsMain)?.PictureUrl);
+                // productItem.PictureUrl);
                 var orderItem = new OrderItem(itemOrdered, productItem.Price, item.Quantity);
                 items.Add(orderItem);
             }

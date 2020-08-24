@@ -34,6 +34,13 @@ namespace API.Helpers
 
             CreateMap<ProductCreateDto, Product>();
 
+            CreateMap<Photo, PhotoToReturnDto>()
+                .ForMember(d => d.PictureUrl, 
+                    o => o.MapFrom<PhotoUrlResolver>());
+
+            // shallI?
+            // CreateMap<Product, ProductToReturnDto>();
+
         }
     }
 } 

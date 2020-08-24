@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Core.Entities;
-using Microsoft.Extensions.Logging;
 using Core.Entities.OrderAggregate;
-
+using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Data
 {
@@ -17,8 +17,12 @@ namespace Infrastructure.Data
         {
             try
             {
+                var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
                 if (!context.ProductBrands.Any())
                 {
+                    // var brandsData =
+                    //     File.ReadAllText(path + @"/Data/SeedData/brands.json");
                     var brandsData = File.ReadAllText("../Infrastructure/Data/SeedData/brands.json");
 
                     var brands = JsonSerializer.Deserialize<List<ProductBrand>>(brandsData);
@@ -27,12 +31,14 @@ namespace Infrastructure.Data
                     {
                         context.ProductBrands.Add(item);
                     }
+
                     await context.SaveChangesAsync();
                 }
 
-
                 if (!context.ProductTypes.Any())
                 {
+                    // var typesData =
+                    //     File.ReadAllText(path + @"/Data/SeedData/types.json");
                     var typesData = File.ReadAllText("../Infrastructure/Data/SeedData/types.json");
 
                     var types = JsonSerializer.Deserialize<List<ProductType>>(typesData);
@@ -41,26 +47,39 @@ namespace Infrastructure.Data
                     {
                         context.ProductTypes.Add(item);
                     }
+
                     await context.SaveChangesAsync();
                 }
-
 
                 if (!context.Products.Any())
                 {
+                    // var productsData =
+                    //     File.ReadAllText(path + @"/Data/SeedData/products.json");
                     var productsData = File.ReadAllText("../Infrastructure/Data/SeedData/products.json");
-
-                    var products = JsonSerializer.Deserialize<List<Product>>(productsData);
+                    var products = JsonSerializer.Deserialize<List<ProductSeedModel>>(productsData);
 
                     foreach (var item in products)
                     {
-                        context.Products.Add(item);
+                        var pictureFileName = item.PictureUrl.Substring(16);
+                        var product = new Product
+                        {
+                            Name = item.Name,
+                            Description = item.Description,
+                            Price = item.Price,
+                            ProductBrandId = item.ProductBrandId,
+                            ProductTypeId = item.ProductTypeId
+                        };
+                        product.AddPhoto(item.PictureUrl, pictureFileName);
+                        context.Products.Add(product);
                     }
+
                     await context.SaveChangesAsync();
                 }
 
-
                 if (!context.DeliveryMethods.Any())
                 {
+                    // var dmData =
+                    //     File.ReadAllText(path + @"/Data/SeedData/delivery.json");
                     var dmData = File.ReadAllText("../Infrastructure/Data/SeedData/delivery.json");
 
                     var methods = JsonSerializer.Deserialize<List<DeliveryMethod>>(dmData);
@@ -69,9 +88,11 @@ namespace Infrastructure.Data
                     {
                         context.DeliveryMethods.Add(item);
                     }
+
                     await context.SaveChangesAsync();
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 var logger = loggerFactory.CreateLogger<StoreContextSeed>();
                 logger.LogError(ex.Message);

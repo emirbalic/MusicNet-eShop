@@ -24,32 +24,52 @@ namespace API
         }
 
         // public IConfiguration Configuration { get; }
+        public void ConfigureDevelopmentServices(IServiceCollection services)
+        {
+            services.AddDbContext<StoreContext>(
+              x => x.UseSqlite(_configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddDbContext<AppIdentityDbContext>(x =>
+           {
+               x.UseSqlite(_configuration.GetConnectionString("IdentityConnection"));
+           });
+
+            ConfigureServices(services);
+        }
+        public void ConfigureProductionServices(IServiceCollection services)
+        {
+            services.AddDbContext<StoreContext>(
+                         x => x.UseMySql(_configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddDbContext<AppIdentityDbContext>(x =>
+           {
+               x.UseMySql(_configuration.GetConnectionString("IdentityConnection"));
+           });
+
+            ConfigureServices(services);
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
+
             services.AddAutoMapper(typeof(MappingProfiles));
             services.AddControllers();
-            services.AddDbContext<StoreContext>(
-                x => x.UseSqlite(_configuration.GetConnectionString("DefaultConnection")));
-            
-            services.AddDbContext<AppIdentityDbContext>( x => 
-            {
-                x.UseSqlite(_configuration.GetConnectionString("IdentityConnection"));
-            });
 
-            services.AddSingleton<IConnectionMultiplexer>( c => {
+
+            services.AddSingleton<IConnectionMultiplexer>(c =>
+            {
                 var configuration = ConfigurationOptions.Parse(_configuration
                 .GetConnectionString("Redis"), true);
                 return ConnectionMultiplexer.Connect(configuration);
             });
-           
+
             services.AddApplicationServices();
             services.AddIdentityServices(_configuration);
             services.addSwaggerDocumentation();
-            services.AddCors( opt => {
-                opt.AddPolicy("CorsPolicy", policy => 
+            services.AddCors(opt =>
+            {
+                opt.AddPolicy("CorsPolicy", policy =>
                 {
                     policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200");
                 });
@@ -78,7 +98,8 @@ namespace API
             {
                 FileProvider = new PhysicalFileProvider(
                     Path.Combine(Directory.GetCurrentDirectory(), "Content")
-                ), RequestPath = "/content"
+                ),
+                RequestPath = "/content"
             });
 
             app.UseCors("CorsPolicy");
@@ -89,10 +110,10 @@ namespace API
 
             app.UseSwaggerDocumentation();
 
-            app.UseEndpoints(endpoints => 
+            app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                // endpoints.MapFallbackToController("Index", "Fallback");
+                endpoints.MapFallbackToController("Index", "Fallback");
             });
         }
     }

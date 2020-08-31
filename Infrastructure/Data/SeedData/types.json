@@ -1,18 +1,22 @@
 [
-  {
-    "Id": 1,
-    "Name": "Boards"
-  },
-  {
-    "Id": 2,
-    "Name": "Hats"
-  },
-  {
-    "Id": 3,
-    "Name": "Boots"
-  },
-  {
-    "Id": 4,
-    "Name": "Gloves"
-  }
+ {
+   "Id": 1,
+   "Name": "Extra-Virgin Olive Oil"
+ },
+ {
+   "Id": 2,
+   "Name": "Virgin-Olive Oil"
+ },
+ {
+   "Id": 3,
+   "Name": "Refined Olive Oil"
+ },
+ {
+   "Id": 4,
+   "Name": "Pure Olive Oil"
+ },
+ {
+   "Id": 5,
+   "Name": "Olive Pomace Oil"
+ }
 ]
